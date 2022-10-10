@@ -1,9 +1,14 @@
 const express = require("express");
+const cors = require("cors");
 
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+
+    // Endpoints
+    this.usuariosPath = "/api/usuarios";
+    this.productosPath = "/api/productos";
 
     // Middlewares
     this.middlewares();
@@ -13,34 +18,21 @@ class Server {
   }
 
   middlewares() {
+    // CORS
+    this.app.use(cors());
+
+    // Lectura y parseo del body a JSON
+    this.app.use(express.json());
+
     // Directorio público
     this.app.use(express.static("build"));
   }
 
   routes() {
-    this.app.get("/api", (req, res) => {
-      res.json({
-        msg: "kitchenware",
-      });
-    });
-
-    this.app.post("/api", (req, res) => {
-      res.json({
-        msg: "kitchenware",
-      });
-    });
-
-    this.app.put("/api", (req, res) => {
-      res.json({
-        msg: "kitchenware",
-      });
-    });
-
-    this.app.delete("/api", (req, res) => {
-      res.json({
-        msg: "kitchenware",
-      });
-    });
+    // Rutas usuarios
+    this.app.use(this.usuariosPath, require("../routes/usuarios.routes"));
+    // Rutas productos
+    this.app.use(this.productosPath, require("../routes/productos.routes"));
   }
 
   listen() {
