@@ -1,6 +1,6 @@
 const { request, response } = require("express");
 const Usuario = require("../models/usuario");
-const bcrypt = require("bcryptjs");
+const { encriptarCadena } = require("../helpers/herramientas");
 
 const usuariosGet = (req = request, res = response) => {
   const { page = 1, limit = 10 } = req.query;
@@ -12,12 +12,12 @@ const usuariosGet = (req = request, res = response) => {
   });
 };
 
-const usuariosGetById = (req, res = response) => {
+const usuariosGetById = async (req, res = response) => {
   const id = req.params.id;
+  const { password, ...usuario } = await Usuario.findById(id);
 
   res.json({
-    msg: "get usuarios",
-    id,
+    usuario,
   });
 };
 
@@ -31,8 +31,7 @@ const usuariosPost = async (req, res = response) => {
   });
 
   // Encriptar la contraseña
-  const salt = bcrypt.genSaltSync();
-  usuario.password = bcrypt.hashSync(password, salt);
+  usuario.password = encriptarCadena(password);
 
   // Guardar en DB
   await usuario.save();
@@ -42,20 +41,20 @@ const usuariosPost = async (req, res = response) => {
   });
 };
 
-const usuariosPatch = (req, res = response) => {
+const usuariosPut = async (req = require, res = response) => {
   const id = req.params.id;
+  const { _id, password, google, ...body } = req.body;
+
+  // Validar contra base de datos
+  if (password) {
+    // Encriptar la contraseña
+    body.password = encriptarCadena(password);
+  }
+
+  const usuario = await Usuario.findByIdAndUpdate(id, body, { new: true });
 
   res.json({
-    msg: "patch usuarios",
-  });
-};
-
-const usuariosPut = (req = require, res = response) => {
-  const id = req.params.id;
-
-  res.json({
-    msg: "put usuarios",
-    id,
+    usuario,
   });
 };
 
@@ -71,7 +70,6 @@ module.exports = {
   usuariosGet,
   usuariosGetById,
   usuariosPost,
-  usuariosPatch,
   usuariosPut,
   usuariosDelete,
 };

@@ -1,6 +1,8 @@
+const mongoose = require("mongoose");
 const Role = require("../models/rol");
 const Usuario = require("../models/usuario");
 
+// Validacion a base de datos de roles para confirmar si existe
 const esRolValido = async (rol = "") => {
   const existeRol = await Role.findOne({ rol });
   if (!existeRol) {
@@ -16,7 +18,16 @@ const emailExiste = async (correo = "") => {
   }
 };
 
+// Validacion a base de datos de usuarios para confirmar si existe
+const usuarioExiste = async (id = "") => {
+  const existeUsuario = await Usuario.findById(id);
+  if (!existeUsuario) {
+    throw new Error(`El usuario con id ${id} no existe`);
+  }
+};
+
 module.exports = {
   esRolValido,
   emailExiste,
+  usuarioExiste,
 };
