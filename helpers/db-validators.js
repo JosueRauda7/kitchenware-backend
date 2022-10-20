@@ -21,9 +21,19 @@ const emailExiste = async (correo = "") => {
 // Validacion a base de datos de usuarios para confirmar si existe
 const usuarioExiste = async (id = "") => {
   const existeUsuario = await Usuario.findById(id);
-  if (!existeUsuario) {
+  if (!existeUsuario || !existeUsuario.estado) {
     throw new Error(`El usuario con id ${id} no existe`);
   }
+};
+
+// Verificar si el usuario que está eliminando es administrador
+const usuarioEsAdmin = async (id = "") => {
+  const usuario = await Usuario.findById(id);
+  if (usuario.rol !== "ADMIN_ROL") {
+    return false;
+  }
+
+  return true;
 };
 
 // Verificar si los parametro de paginado son positivos
@@ -39,4 +49,5 @@ module.exports = {
   emailExiste,
   usuarioExiste,
   esNumeroPositivo,
+  usuarioEsAdmin,
 };
