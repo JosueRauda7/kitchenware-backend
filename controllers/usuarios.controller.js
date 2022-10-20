@@ -2,13 +2,26 @@ const { request, response } = require("express");
 const Usuario = require("../models/usuario");
 const { encriptarCadena } = require("../helpers/herramientas");
 
-const usuariosGet = (req = request, res = response) => {
-  const { page = 1, limit = 10 } = req.query;
+const usuariosGet = async (req = request, res = response) => {
+  const { page = 1, limit = 10, start = 0 } = req.query;
+  const query = { estado: true };
+  const usuarios = await Usuario.find(query)
+    .skip(Number((start > 0 ? start - 1 : start) * page))
+    .limit(Number(limit));
+
+  const usuariosEnPagina = usuarios.length;
+  const totalUsuarios = await Usuario.countDocuments(query);
 
   res.json({
-    msg: "get usuarios",
-    page,
-    limit,
+    body: {
+      usuarios,
+      msg: "Usuarios obtenidos correctamente",
+      start,
+      limit,
+      page,
+      usuariosEnPagina,
+      totalUsuarios,
+    },
   });
 };
 
@@ -17,7 +30,10 @@ const usuariosGetById = async (req, res = response) => {
   const { password, ...usuario } = await Usuario.findById(id);
 
   res.json({
-    usuario,
+    body: {
+      usuario,
+      msg: "Usuario obtenido correctamente",
+    },
   });
 };
 
@@ -37,7 +53,10 @@ const usuariosPost = async (req, res = response) => {
   await usuario.save();
 
   res.status(201).json({
-    usuario,
+    body: {
+      _id: usuario._id,
+      msg: "Usuario creado correctamente",
+    },
   });
 };
 
@@ -54,7 +73,10 @@ const usuariosPut = async (req = require, res = response) => {
   const usuario = await Usuario.findByIdAndUpdate(id, body, { new: true });
 
   res.json({
-    usuario,
+    body: {
+      _id: usuario._id,
+      msg: "Usuario modificado correctamente",
+    },
   });
 };
 

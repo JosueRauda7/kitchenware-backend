@@ -26,8 +26,17 @@ const usuarioExiste = async (id = "") => {
   }
 };
 
+// Verificar si los parametro de paginado son positivos
+const esNumeroPositivo = (numero = 0, valor = "") => {
+  const esPositivo = numero >= 0 && !isNaN(numero);
+  if (!esPositivo) {
+    throw new Error(`El valor ${valor} debe ser un entero positivo`);
+  }
+};
+
 module.exports = {
   esRolValido,
   emailExiste,
   usuarioExiste,
+  esNumeroPositivo,
 };

@@ -11,12 +11,34 @@ const {
   esRolValido,
   emailExiste,
   usuarioExiste,
+  esNumeroPositivo,
 } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
 
 const router = Router();
 
-router.get("/", usuariosGet);
+router.get(
+  "/",
+  [
+    check("limit", "El parámetro debe ser un entero positivo")
+      .toInt()
+      .isNumeric()
+      // .custom((valor) => esNumeroPositivo(valor, "limit"))
+      .optional(),
+    check("start", "El parámetro debe ser un entero positivo")
+      .toInt()
+      .isNumeric()
+      // .custom((valor) => esNumeroPositivo(valor, "start"))
+      .optional(),
+    check("page", "El parámetro debe ser un entero positivo")
+      .toInt()
+      .isNumeric()
+      // .custom((valor) => esNumeroPositivo(valor, "page"))
+      .optional(),
+    validarCampos,
+  ],
+  usuariosGet
+);
 
 router.get(
   "/:id",
