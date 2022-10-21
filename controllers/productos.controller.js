@@ -19,6 +19,18 @@ const productosGet = async (req, res = response) => {
   });
 };
 
+const productosGetById = async (req, res) => {
+  const id = req.params.id;
+  const producto = await Producto.findById(id);
+
+  res.json({
+    body: {
+      producto,
+      msg: "Producto obtenido correctamente",
+    },
+  });
+};
+
 const productosPost = async (req, res = response) => {
   const {
     nombre,
@@ -91,6 +103,7 @@ const productosDelete = async (req, res = response) => {
 
 module.exports = {
   productosGet,
+  productosGetById,
   productosPost,
   productosPut,
   productosDelete,
