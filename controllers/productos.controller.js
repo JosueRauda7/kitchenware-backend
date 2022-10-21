@@ -1,4 +1,5 @@
 const { response } = require("express");
+const Producto = require("../models/producto");
 
 const productosGet = (req, res = response) => {
   res.json({
@@ -6,21 +7,55 @@ const productosGet = (req, res = response) => {
   });
 };
 
-const productosPost = (req, res = response) => {
+const productosPost = async (req, res = response) => {
+  const {
+    nombre,
+    descripcion,
+    detalles,
+    imgProducto,
+    precio,
+    estado = true,
+  } = req.body;
+
+  const producto = new Producto({
+    nombre,
+    descripcion,
+    detalles,
+    imgProducto,
+    precio,
+    estado,
+  });
+
+  await producto.save();
+
   res.status(201).json({
+    producto,
     msg: "post productos",
   });
 };
 
-const productosPatch = (req, res = response) => {
-  res.json({
-    msg: "patch productos",
-  });
-};
+const productosPut = async (req, res = response) => {
+  const id = req.params.id;
 
-const productosPut = (req, res = response) => {
+  const { nombre, descripcion, detalles, imgProducto, precio } = req.body;
+
+  const producto = await Producto.findByIdAndUpdate(
+    id,
+    {
+      nombre,
+      descripcion,
+      detalles,
+      imgProducto,
+      precio,
+    },
+    { new: true }
+  );
+
   res.json({
-    msg: "put productos",
+    body: {
+      producto,
+      msg: "Producto modificado correctamente",
+    },
   });
 };
 
@@ -33,7 +68,6 @@ const productosDelete = (req, res = response) => {
 module.exports = {
   productosGet,
   productosPost,
-  productosPatch,
   productosPut,
   productosDelete,
 };

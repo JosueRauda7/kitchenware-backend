@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
+const Producto = require("../models/producto");
 const Role = require("../models/rol");
 const Usuario = require("../models/usuario");
+
+// -------------ROLES-----------------
 
 // Validacion a base de datos de roles para confirmar si existe
 const esRolValido = async (rol = "") => {
@@ -9,6 +12,8 @@ const esRolValido = async (rol = "") => {
     throw new Error(`El rol ${rol} no está registrado en la base de datos`);
   }
 };
+
+// ------------USUARIOS---------------
 
 // Verificar si el correo existe
 const emailExiste = async (correo = "") => {
@@ -44,10 +49,19 @@ const esNumeroPositivo = (numero = 0, valor = "") => {
   }
 };
 
+// ----------PRODUCTOS-------------
+const existeProducto = async (id = "") => {
+  const producto = await Producto.findById(id);
+  if (!producto || !producto.estado) {
+    throw new Error(`El producto con el id ${id} no existe`);
+  }
+};
+
 module.exports = {
   esRolValido,
   emailExiste,
   usuarioExiste,
   esNumeroPositivo,
   usuarioEsAdmin,
+  existeProducto,
 };

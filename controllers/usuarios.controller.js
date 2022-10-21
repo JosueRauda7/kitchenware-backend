@@ -113,9 +113,10 @@ const usuariosDelete = async (req, res = response) => {
   );
 
   res.json({
-    usuario,
-    msg: "Usuario eliminado correctamente",
-    idUsuarioAdmin,
+    body: {
+      usuario,
+      msg: "Usuario eliminado correctamente",
+    },
   });
 };
 
