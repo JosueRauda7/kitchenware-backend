@@ -1,9 +1,21 @@
 const { response } = require("express");
 const Producto = require("../models/producto");
 
-const productosGet = (req, res = response) => {
+const productosGet = async (req, res = response) => {
+  const { start = 0, limit = 5, page = 1 } = req.query;
+  const query = { estado: true };
+  const [productos] = await Promise.all([
+    Producto.find(query)
+      .skip(Number((start > 0 ? start - 1 : start) * page))
+      .limit(Number(limit)),
+    Producto.find(query),
+  ]);
+
   res.json({
-    msg: "get productos",
+    body: {
+      productos,
+      msg: "Productos obtenido correctamente",
+    },
   });
 };
 
@@ -59,9 +71,21 @@ const productosPut = async (req, res = response) => {
   });
 };
 
-const productosDelete = (req, res = response) => {
+const productosDelete = async (req, res = response) => {
+  const id = req.params.id;
+  const { idUsuarioAdmin } = req.body;
+  const producto = await Producto.findByIdAndUpdate(
+    id,
+    { estado: false },
+    { new: true }
+  );
+
   res.json({
-    msg: "delete productos",
+    body: {
+      producto,
+      msg: "El producto se ha eliminado correctamente",
+      idUsuarioAdmin,
+    },
   });
 };
 

@@ -3,11 +3,10 @@ const { check } = require("express-validator");
 const {
   productosGet,
   productosPost,
-  productosPatch,
   productosPut,
   productosDelete,
 } = require("../controllers/productos.controller");
-const { existeProducto } = require("../helpers/db-validators");
+const { existeProducto, usuarioExiste } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
 
 const router = Router();
@@ -42,6 +41,8 @@ router.delete(
   [
     check("id", "El id no es válido").isMongoId(),
     check("id").custom(existeProducto),
+    check("idUsuarioAdmin", "El id no es valido").isMongoId(),
+    check("idUsuarioAdmin").custom(usuarioExiste),
     validarCampos,
   ],
   productosDelete
