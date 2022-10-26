@@ -11,7 +11,7 @@ const usuariosGet = async (req = request, res = response) => {
   // Dos promesas que se ejecutan al mismo tiempo, optimizando el tiempo
   const [usuarios, totalUsuarios] = await Promise.all([
     await Usuario.find(query)
-      .skip(Number((start > 0 ? start - 1 : start) * page))
+      .skip(Number((start > 0 ? start - 1 : 0) * page))
       .limit(Number(limit)),
     await Usuario.countDocuments(query),
   ]);

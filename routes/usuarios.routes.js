@@ -11,7 +11,6 @@ const {
   esRolValido,
   emailExiste,
   usuarioExiste,
-  esNumeroPositivo,
 } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
 

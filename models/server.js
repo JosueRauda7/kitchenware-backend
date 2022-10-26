@@ -8,8 +8,11 @@ class Server {
     this.port = process.env.PORT;
 
     // Endpoints
-    this.usuariosPath = "/api/usuarios";
-    this.productosPath = "/api/productos";
+    this.paths = {
+      categorias: "/api/categorias",
+      productos: "/api/productos",
+      usuarios: "/api/usuarios",
+    };
 
     // Conectar a base de datos
     this.conectarDB();
@@ -38,9 +41,11 @@ class Server {
 
   routes() {
     // Rutas usuarios
-    this.app.use(this.usuariosPath, require("../routes/usuarios.routes"));
+    this.app.use(this.paths.usuarios, require("../routes/usuarios.routes"));
     // Rutas productos
-    this.app.use(this.productosPath, require("../routes/productos.routes"));
+    this.app.use(this.paths.productos, require("../routes/productos.routes"));
+    // Rutas productos
+    this.app.use(this.paths.categorias, require("../routes/categorias.routes"));
   }
 
   listen() {

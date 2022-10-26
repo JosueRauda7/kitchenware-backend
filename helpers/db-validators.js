@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const Producto = require("../models/producto");
-const Role = require("../models/rol");
-const Usuario = require("../models/usuario");
+const { Categoria, Producto, Role, Usuario } = require("../models/indexModels");
 
 // -------------ROLES-----------------
 
@@ -57,6 +55,21 @@ const existeProducto = async (id = "") => {
   }
 };
 
+// ---------CATEGORIAS-------------
+const existeCategoria = async (id = "") => {
+  const categoria = await Categoria.findById(id);
+  if (!categoria || !categoria.estado) {
+    throw new Error(`La categoria con el id ${id} no existe`);
+  }
+};
+
+const nombreCategoriaExiste = async (nombre = "") => {
+  const categoria = await Categoria.findOne({ nombre });
+  if (categoria) {
+    throw new Error(`La categoria ${nombre} ya existe`);
+  }
+};
+
 module.exports = {
   esRolValido,
   emailExiste,
@@ -64,4 +77,6 @@ module.exports = {
   esNumeroPositivo,
   usuarioEsAdmin,
   existeProducto,
+  existeCategoria,
+  nombreCategoriaExiste,
 };

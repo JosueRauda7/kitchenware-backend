@@ -4,16 +4,17 @@ const Producto = require("../models/producto");
 const productosGet = async (req, res = response) => {
   const { start = 0, limit = 5, page = 1 } = req.query;
   const query = { estado: true };
-  const [productos] = await Promise.all([
+  const [productos, totalProductos] = await Promise.all([
     Producto.find(query)
       .skip(Number((start > 0 ? start - 1 : start) * page))
       .limit(Number(limit)),
-    Producto.find(query),
+    Producto.countDocuments(query),
   ]);
 
   res.json({
     body: {
       productos,
+      totalProductos,
       msg: "Productos obtenido correctamente",
     },
   });
@@ -39,6 +40,8 @@ const productosPost = async (req, res = response) => {
     imgProducto,
     precio,
     estado = true,
+    categoria,
+    idUsuarioAdmin,
   } = req.body;
 
   const producto = new Producto({
@@ -48,6 +51,9 @@ const productosPost = async (req, res = response) => {
     imgProducto,
     precio,
     estado,
+    categoria,
+    updatedBy: idUsuarioAdmin,
+    createdBy: idUsuarioAdmin,
   });
 
   await producto.save();
@@ -61,7 +67,15 @@ const productosPost = async (req, res = response) => {
 const productosPut = async (req, res = response) => {
   const id = req.params.id;
 
-  const { nombre, descripcion, detalles, imgProducto, precio } = req.body;
+  const {
+    nombre,
+    descripcion,
+    detalles,
+    imgProducto,
+    precio,
+    idUsuarioAdmin,
+    estado,
+  } = req.body;
 
   const producto = await Producto.findByIdAndUpdate(
     id,
@@ -71,6 +85,9 @@ const productosPut = async (req, res = response) => {
       detalles,
       imgProducto,
       precio,
+      estado,
+      categoria,
+      updatedBy: idUsuarioAdmin,
     },
     { new: true }
   );
@@ -88,7 +105,7 @@ const productosDelete = async (req, res = response) => {
   const { idUsuarioAdmin } = req.body;
   const producto = await Producto.findByIdAndUpdate(
     id,
-    { estado: false },
+    { estado: false, updatedBy: idUsuarioAdmin },
     { new: true }
   );
 
@@ -96,7 +113,6 @@ const productosDelete = async (req, res = response) => {
     body: {
       producto,
       msg: "El producto se ha eliminado correctamente",
-      idUsuarioAdmin,
     },
   });
 };

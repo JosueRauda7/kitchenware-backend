@@ -23,11 +23,26 @@ const ProductoSchema = Schema({
     type: Boolean,
     required: [true, "El producto requiere de un estado"],
   },
+  categoria: {
+    type: Schema.Types.ObjectId,
+    ref: "Categoria",
+    required: true,
+  },
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: "Usuario",
+    required: true,
+  },
+  updatedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "Usuario",
+    required: true,
+  },
 });
 
 // Devolver instancia sin los atributos deseados
 ProductoSchema.methods.toJSON = function () {
-  const { __v, ...producto } = this.toObject();
+  const { __v, createdBy, updatedBy, ...producto } = this.toObject();
   return producto;
 };
 
