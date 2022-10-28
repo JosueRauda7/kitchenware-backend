@@ -12,6 +12,7 @@ class Server {
       categorias: "/api/categorias",
       productos: "/api/productos",
       usuarios: "/api/usuarios",
+      auth: "/api/auth",
     };
 
     // Conectar a base de datos
@@ -40,12 +41,14 @@ class Server {
   }
 
   routes() {
-    // Rutas usuarios
-    this.app.use(this.paths.usuarios, require("../routes/usuarios.routes"));
+    // Rutas autorización
+    this.app.use(this.paths.auth, require("../routes/auth.routes"));
+    // Rutas categorias
+    this.app.use(this.paths.categorias, require("../routes/categorias.routes"));
     // Rutas productos
     this.app.use(this.paths.productos, require("../routes/productos.routes"));
-    // Rutas productos
-    this.app.use(this.paths.categorias, require("../routes/categorias.routes"));
+    // Rutas usuarios
+    this.app.use(this.paths.usuarios, require("../routes/usuarios.routes"));
   }
 
   listen() {
