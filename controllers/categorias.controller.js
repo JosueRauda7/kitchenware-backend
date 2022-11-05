@@ -40,14 +40,29 @@ const getCategoriasById = async (req, res) => {
   });
 };
 const postCategorias = async (req, res) => {
-  const { nombre, imgCategoria, idUsuarioAdmin } = req.body;
+  const { nombre, imgCategoria } = req.body;
+
+  const usuarioAuth = req.usuarioAuth;
+
+  usuarioAdmin = req.uid;
+
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
+    res.status(401).json({
+      errores: {
+        errors: [{ msg: "El usuario no tiene permisos de administrador" }],
+      },
+      msg: "Ha habido un error, verificar el atributo error de la respuesta para más información",
+    });
+
+    return;
+  }
 
   const categoria = new Categoria({
     nombre,
     imgCategoria,
     estado: true,
-    createdBy: idUsuarioAdmin,
-    updatedBy: idUsuarioAdmin,
+    createdBy: usuarioAdmin,
+    updatedBy: usuarioAdmin,
   });
 
   await categoria.save();
@@ -61,14 +76,33 @@ const postCategorias = async (req, res) => {
 };
 const putCategorias = async (req, res) => {
   const id = req.params.id;
-  const { nombre, imgCategoria, idUsuarioAdmin, estado } = req.body;
+  const { nombre, imgCategoria, estado } = req.body;
 
-  const categoria = await Categoria.findByIdAndUpdate(id, {
-    nombre,
-    imgCategoria,
-    estado,
-    updatedBy: idUsuarioAdmin,
-  });
+  const usuarioAuth = req.usuarioAuth;
+
+  usuarioAdmin = req.uid;
+
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
+    res.status(401).json({
+      errores: {
+        errors: [{ msg: "El usuario no tiene permisos de administrador" }],
+      },
+      msg: "Ha habido un error, verificar el atributo error de la respuesta para más información",
+    });
+
+    return;
+  }
+
+  const categoria = await Categoria.findByIdAndUpdate(
+    id,
+    {
+      nombre,
+      imgCategoria,
+      estado,
+      updatedBy: usuarioAdmin,
+    },
+    { new: true }
+  );
 
   res.json({
     body: {
@@ -79,10 +113,23 @@ const putCategorias = async (req, res) => {
 };
 const deleteCategorias = async (req, res) => {
   const id = req.params.id;
-  const { idUsuarioAdmin } = req.body;
+  const usuarioAuth = req.usuarioAuth;
+
+  usuarioAdmin = req.uid;
+
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
+    res.status(401).json({
+      errores: {
+        errors: [{ msg: "El usuario no tiene permisos de administrador" }],
+      },
+      msg: "Ha habido un error, verificar el atributo error de la respuesta para más información",
+    });
+
+    return;
+  }
   const categoria = await Categoria.findByIdAndUpdate(
     id,
-    { estado: false, updatedBy: idUsuarioAdmin },
+    { estado: false, updatedBy: usuarioAdmin },
     { new: true }
   );
 

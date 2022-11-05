@@ -41,8 +41,22 @@ const productosPost = async (req, res = response) => {
     precio,
     estado = true,
     categoria,
-    idUsuarioAdmin,
   } = req.body;
+
+  const usuarioAuth = req.usuarioAuth;
+
+  usuarioAdmin = req.uid;
+
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
+    res.status(401).json({
+      errores: {
+        errors: [{ msg: "El usuario no tiene permisos de administrador" }],
+      },
+      msg: "Ha habido un error, verificar el atributo error de la respuesta para más información",
+    });
+
+    return;
+  }
 
   const producto = new Producto({
     nombre,
@@ -52,8 +66,8 @@ const productosPost = async (req, res = response) => {
     precio,
     estado,
     categoria,
-    updatedBy: idUsuarioAdmin,
-    createdBy: idUsuarioAdmin,
+    updatedBy: usuarioAdmin,
+    createdBy: usuarioAdmin,
   });
 
   await producto.save();
@@ -73,9 +87,24 @@ const productosPut = async (req, res = response) => {
     detalles,
     imgProducto,
     precio,
-    idUsuarioAdmin,
     estado,
+    categoria,
   } = req.body;
+
+  const usuarioAuth = req.usuarioAuth;
+
+  usuarioAdmin = req.uid;
+
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
+    res.status(401).json({
+      errores: {
+        errors: [{ msg: "El usuario no tiene permisos de administrador" }],
+      },
+      msg: "Ha habido un error, verificar el atributo error de la respuesta para más información",
+    });
+
+    return;
+  }
 
   const producto = await Producto.findByIdAndUpdate(
     id,
@@ -87,7 +116,7 @@ const productosPut = async (req, res = response) => {
       precio,
       estado,
       categoria,
-      updatedBy: idUsuarioAdmin,
+      updatedBy: usuarioAdmin,
     },
     { new: true }
   );
@@ -102,10 +131,24 @@ const productosPut = async (req, res = response) => {
 
 const productosDelete = async (req, res = response) => {
   const id = req.params.id;
-  const { idUsuarioAdmin } = req.body;
+  const usuarioAuth = req.usuarioAuth;
+
+  usuarioAdmin = req.uid;
+
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
+    res.status(401).json({
+      errores: {
+        errors: [{ msg: "El usuario no tiene permisos de administrador" }],
+      },
+      msg: "Ha habido un error, verificar el atributo error de la respuesta para más información",
+    });
+
+    return;
+  }
+
   const producto = await Producto.findByIdAndUpdate(
     id,
-    { estado: false, updatedBy: idUsuarioAdmin },
+    { estado: false, updatedBy: usuarioAdmin },
     { new: true }
   );
 

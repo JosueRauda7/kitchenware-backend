@@ -9,6 +9,7 @@ const {
 } = require("../controllers/productos.controller");
 const { existeProducto, usuarioExiste } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 
 const router = Router();
 
@@ -48,6 +49,7 @@ router.get(
 router.post(
   "/",
   [
+    validarJWT,
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
     check("descripcion", "La descripción es obligatoria").not().isEmpty(),
     check("precio", "El precio es obligatorio").isNumeric(),
@@ -59,6 +61,7 @@ router.post(
 router.put(
   "/:id",
   [
+    validarJWT,
     check("id", "El id no es válido").isMongoId(),
     check("id").custom(existeProducto),
     validarCampos,
@@ -69,10 +72,9 @@ router.put(
 router.delete(
   "/:id",
   [
+    validarJWT,
     check("id", "El id no es válido").isMongoId(),
     check("id").custom(existeProducto),
-    check("idUsuarioAdmin", "El id no es valido").isMongoId(),
-    check("idUsuarioAdmin").custom(usuarioExiste),
     validarCampos,
   ],
   productosDelete

@@ -13,6 +13,7 @@ const {
   nombreCategoriaExiste,
 } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
+const { validarJWT } = require("../middlewares/validar-jwt");
 
 const router = Router();
 
@@ -52,14 +53,9 @@ router.get(
 router.post(
   "/",
   [
+    validarJWT,
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
     check("nombre").custom(nombreCategoriaExiste),
-    check("createdBy", "El campo createdBy es obligatorio").not().isEmpty(),
-    check("updatedBy", "El campo updatedBy es obligatorio").not().isEmpty(),
-    check("createdBy").custom(usuarioExiste),
-    check("updatedBy").custom(usuarioExiste),
-    check("createdBy", "El campo createdBy no es valido").isMongoId(),
-    check("updatedBy", "El campo updatedBy no es valido").isMongoId(),
     validarCampos,
   ],
   postCategorias
@@ -68,13 +64,11 @@ router.post(
 router.put(
   "/:id",
   [
+    validarJWT,
     check("id", "El id no es válido").isMongoId(),
     check("id").custom(existeCategoria),
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
     check("nombre").custom(nombreCategoriaExiste),
-    check("updatedBy", "El campo updatedBy es obligatorio").not().isEmpty(),
-    check("updatedBy").custom(usuarioExiste),
-    check("updatedBy", "El campo updatedBy no es valido").isMongoId(),
     validarCampos,
   ],
   putCategorias
@@ -83,10 +77,9 @@ router.put(
 router.delete(
   "/:id",
   [
+    validarJWT,
     check("id", "El id no es válido").isMongoId(),
     check("id").custom(existeCategoria),
-    check("idUsuarioAdmin", "El id no es valido").isMongoId(),
-    check("idUsuarioAdmin").custom(usuarioExiste),
   ],
   deleteCategorias
 );
