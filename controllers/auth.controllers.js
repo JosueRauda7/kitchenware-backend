@@ -2,6 +2,7 @@ const { request, response, json } = require("express");
 const bcryptjs = require("bcryptjs");
 const Usuario = require("../models/usuario");
 const { generarJWT } = require("../helpers/generarJWT");
+const { encriptarCadena } = require("../helpers/herramientas");
 
 const login = async (req = request, res = response) => {
   const { correo, password } = req.body;
@@ -31,7 +32,7 @@ const login = async (req = request, res = response) => {
     }
 
     // Generar JWT
-    const token = await generarJWT(usuario.uid);
+    const token = await generarJWT(usuario._id);
 
     res.json({
       body: {
@@ -48,15 +49,31 @@ const login = async (req = request, res = response) => {
   }
 };
 
-// const register = (req = request, res = response) => {
-//   res.json({
-//     body: {
-//       msg: "register",
-//     },
-//   });
-// };
+const registerByEmail = async (req = request, res = response) => {
+  const { nombre, correo, password } = req.body;
+
+  const usuario = new Usuario({
+    nombre,
+    correo,
+    password,
+    estado: true,
+    google: false,
+    rol: "USER_ROL",
+  });
+
+  usuario.password = encriptarCadena(password);
+
+  usuario.save();
+
+  res.json({
+    body: {
+      usuario,
+      msg: "Usuario registrado correctamente",
+    },
+  });
+};
 
 module.exports = {
   login,
-  // register,
+  registerByEmail,
 };

@@ -3,6 +3,7 @@ const Usuario = require("../models/usuario");
 const { encriptarCadena } = require("../helpers/herramientas");
 const usuario = require("../models/usuario");
 const { usuarioEsAdmin } = require("../helpers/db-validators");
+const { generarJWT } = require("../helpers/generarJWT");
 
 const usuariosGet = async (req = request, res = response) => {
   const { page = 1, limit = 10, start = 0 } = req.query;
@@ -60,11 +61,15 @@ const usuariosPost = async (req, res = response) => {
   // Guardar en DB
   await usuario.save();
 
+  // Generamos token
+  const token = generarJWT(usuario._id);
+
   res.status(201).json({
     body: {
       _id: usuario._id,
       usuario,
       msg: "Usuario creado correctamente",
+      token,
     },
   });
 };
@@ -91,11 +96,11 @@ const usuariosPut = async (req = require, res = response) => {
 
 const usuariosDelete = async (req, res = response) => {
   const id = req.params.id;
-  const { idUsuarioAdmin } = req.body;
+  const usuarioAuth = req.usuarioAuth;
 
-  usuarioEsRolAdmin = await usuarioEsAdmin(idUsuarioAdmin);
+  usuarioAdmin = req.uid;
 
-  if (!usuarioEsRolAdmin) {
+  if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
     res.status(401).json({
       errores: {
         errors: [{ msg: "El usuario no tiene permisos de administrador" }],
@@ -115,6 +120,7 @@ const usuariosDelete = async (req, res = response) => {
   res.json({
     body: {
       usuario,
+      usuarioAuth,
       msg: "Usuario eliminado correctamente",
     },
   });
