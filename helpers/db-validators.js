@@ -13,6 +13,14 @@ const esRolValido = async (rol = "") => {
 
 // ------------USUARIOS---------------
 
+// Verificar si el username existe
+const usernameExiste = async (username = "") => {
+  const existeUsername = await Usuario.findOne({ username });
+  if (existeUsername) {
+    throw new Error(`${username} ya existe`);
+  }
+};
+
 // Verificar si el correo existe
 const emailExiste = async (correo = "") => {
   const existeCorreo = await Usuario.findOne({ correo });
@@ -79,4 +87,5 @@ module.exports = {
   existeProducto,
   existeCategoria,
   nombreCategoriaExiste,
+  usernameExiste,
 };

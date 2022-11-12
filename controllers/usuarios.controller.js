@@ -1,8 +1,6 @@
 const { request, response } = require("express");
 const Usuario = require("../models/usuario");
 const { encriptarCadena } = require("../helpers/herramientas");
-const usuario = require("../models/usuario");
-const { usuarioEsAdmin } = require("../helpers/db-validators");
 const { generarJWT } = require("../helpers/generarJWT");
 
 const usuariosGet = async (req = request, res = response) => {
@@ -47,9 +45,9 @@ const usuariosGetById = async (req, res = response) => {
 };
 
 const usuariosPost = async (req, res = response) => {
-  const { nombre, correo, password, rol } = req.body;
+  const { username, correo, password, rol } = req.body;
   const usuario = new Usuario({
-    nombre,
+    username,
     correo,
     password,
     rol,

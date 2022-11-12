@@ -5,21 +5,27 @@ const { generarJWT } = require("../helpers/generarJWT");
 const { encriptarCadena } = require("../helpers/herramientas");
 
 const login = async (req = request, res = response) => {
-  const { correo, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    // Verificar si email existe
-    const usuario = await Usuario.findOne({ correo });
+    // Verificar si username existe
+    const usuario = await Usuario.findOne({ username });
     if (!usuario) {
       return res.status(404).json({
-        error: "Usuario no encontrado - Email",
+        errores: {
+          errors: [{ msg: "Usuario no existe", param: "username" }],
+        },
+        msg: "Usuario no existe",
       });
     }
 
     // Usuario está activo
     if (!usuario.estado) {
       return res.status(404).json({
-        error: "Usuario no encontrado",
+        errores: {
+          errors: [{ msg: "Usuario no existe", param: "username" }],
+        },
+        msg: "Usuario no existe",
       });
     }
 
@@ -27,7 +33,10 @@ const login = async (req = request, res = response) => {
     const validPassword = bcryptjs.compareSync(password, usuario.password);
     if (!validPassword) {
       return res.status(404).json({
-        error: "Contraseña incorrecta",
+        errores: {
+          errors: [{ msg: "Contraseña incorrecta", param: "password" }],
+        },
+        msg: "Contraseña incorrecta",
       });
     }
 
@@ -50,10 +59,10 @@ const login = async (req = request, res = response) => {
 };
 
 const registerByEmail = async (req = request, res = response) => {
-  const { nombre, correo, password } = req.body;
+  const { username, correo, password } = req.body;
 
   const usuario = new Usuario({
-    nombre,
+    username,
     correo,
     password,
     estado: true,
@@ -63,11 +72,15 @@ const registerByEmail = async (req = request, res = response) => {
 
   usuario.password = encriptarCadena(password);
 
+  // Generar JWT
+  const token = await generarJWT(usuario._id);
+
   usuario.save();
 
   res.json({
     body: {
       usuario,
+      token,
       msg: "Usuario registrado correctamente",
     },
   });
