@@ -24,6 +24,7 @@ const router = Router();
 router.get(
   "/",
   [
+    validarJWT,
     check("limit", "El parámetro debe ser un entero positivo")
       .toInt()
       .isNumeric()

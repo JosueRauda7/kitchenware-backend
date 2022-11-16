@@ -3,7 +3,7 @@ const { check } = require("express-validator");
 const { login, registerByEmail } = require("../controllers/auth.controllers");
 const {
   emailExiste,
-  esRolValido,
+  // esRolValido,
   usernameExiste,
 } = require("../helpers/db-validators");
 const { validarCampos } = require("../middlewares/validar-campos");
