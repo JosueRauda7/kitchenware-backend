@@ -12,7 +12,7 @@ const ProductoSchema = Schema({
   detalles: {
     type: Object,
   },
-  imgProducto: {
+  img: {
     type: String,
   },
   precio: {
