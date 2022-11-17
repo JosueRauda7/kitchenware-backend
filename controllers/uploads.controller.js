@@ -72,7 +72,7 @@ const actualizarImagen = async (req, res = response) => {
 
   try {
     // limpiar imagenes previas
-    // Preguntamos si tiene img
+    // Preguntamos si tiene la imagen en el usuario guardado en mongo
     if (modelo.img) {
       // Creamos ruta de imagen a borrar
       const pathImagen = path.join(
