@@ -22,7 +22,7 @@ const subirArchivo = (
 
     const uploadPath = path.join(
       __dirname,
-      `../uploads`,
+      `../public/uploads`,
       carpeta,
       nuevoNombreArchivo
     );

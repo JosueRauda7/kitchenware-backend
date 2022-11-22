@@ -77,7 +77,7 @@ const actualizarImagen = async (req, res = response) => {
       // Creamos ruta de imagen a borrar
       const pathImagen = path.join(
         __dirname,
-        "../uploads",
+        "../public/uploads",
         coleccion,
         modelo.img
       );
