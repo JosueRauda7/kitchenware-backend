@@ -40,7 +40,7 @@ class Server {
     this.app.use(express.json());
 
     // Directorio público
-    this.app.use(express.static("build"));
+    this.app.use(express.static("public"));
 
     // Manejar la carga de archivos
     this.app.use(
