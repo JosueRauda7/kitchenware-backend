@@ -40,6 +40,7 @@ const productosPost = async (req, res = response) => {
     imgProducto,
     precio,
     estado = true,
+    stock,
     categoria,
   } = req.body;
 
@@ -65,6 +66,7 @@ const productosPost = async (req, res = response) => {
     imgProducto,
     precio,
     estado,
+    stock,
     categoria,
     updatedBy: usuarioAdmin,
     createdBy: usuarioAdmin,
@@ -88,6 +90,7 @@ const productosPut = async (req, res = response) => {
     imgProducto,
     precio,
     estado,
+    stock,
     categoria,
   } = req.body;
 
@@ -116,6 +119,7 @@ const productosPut = async (req, res = response) => {
       precio,
       estado,
       categoria,
+      stock,
       updatedBy: usuarioAdmin,
     },
     { new: true }

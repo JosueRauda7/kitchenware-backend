@@ -23,6 +23,10 @@ const ProductoSchema = Schema({
     type: Boolean,
     required: [true, "El producto requiere de un estado"],
   },
+  stock: {
+    type: Number,
+    required: [true, "El producto requiere un número de existencias"],
+  },
   categoria: {
     type: Schema.Types.ObjectId,
     ref: "Categoria",
