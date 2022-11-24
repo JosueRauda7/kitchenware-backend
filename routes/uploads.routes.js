@@ -18,7 +18,7 @@ router.put(
     check("id", "El Id debe ser de MongoDB").isMongoId(),
     check("coleccion", "La colección que solicita no está permitida").isIn([
       "usuarios",
-      "catalogos",
+      "categorias",
       "productos",
     ]),
     validarCampos,

@@ -55,7 +55,7 @@ router.post(
   [
     validarJWT,
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
-    check("nombre").custom(nombreCategoriaExiste),
+    // check("nombre").custom(nombreCategoriaExiste),
     validarCampos,
   ],
   postCategorias
@@ -68,7 +68,7 @@ router.put(
     check("id", "El id no es válido").isMongoId(),
     check("id").custom(existeCategoria),
     check("nombre", "El nombre es obligatorio").not().isEmpty(),
-    check("nombre").custom(nombreCategoriaExiste),
+    // check("nombre").custom(nombreCategoriaExiste),
     validarCampos,
   ],
   putCategorias

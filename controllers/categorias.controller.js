@@ -46,6 +46,25 @@ const postCategorias = async (req, res) => {
 
   usuarioAdmin = req.uid;
 
+  const category = await Categoria.findOne({ nombre });
+
+  if (category) {
+    category.estado = true;
+    const newCategory = await Categoria.findByIdAndUpdate(
+      category._id,
+      {
+        estado: true,
+        updatedBy: usuarioAdmin,
+      },
+      { new: true }
+    );
+
+    return res.status(201).json({
+      body: newCategory,
+      msg: "Categoria registrado correctamente",
+    });
+  }
+
   if (!usuarioAdmin || !(usuarioAuth.rol === "ADMIN_ROL")) {
     res.status(401).json({
       errores: {
