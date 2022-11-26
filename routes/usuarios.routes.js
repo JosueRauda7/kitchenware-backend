@@ -77,9 +77,6 @@ router.put(
   [
     check("id", "El id no es valido").isMongoId(),
     check("id").custom(usuarioExiste),
-    check("username", "El nombre de usuario es obligatorio").not().isEmpty(),
-    check("correo", "El correo no es valido").isEmail(),
-    check("correo").custom(emailExiste),
     check("rol").custom(esRolValido),
     validarCampos,
   ],

@@ -74,7 +74,35 @@ const usuariosPost = async (req, res = response) => {
 
 const usuariosPut = async (req = require, res = response) => {
   const id = req.params.id;
-  const { _id, password, google, ...body } = req.body;
+  const { _id, password, google, username, correo, ...body } = req.body;
+
+  if (username) {
+    const existeUsername = await Usuario.findOne({ username });
+    if (existeUsername) {
+      return res.status(400).json({
+        errores: {
+          errors: [{ msg: "El usuario ya existe", param: "username" }],
+        },
+        msg: "El usuario está vacío",
+      });
+    } else {
+      body.username = username;
+    }
+  }
+
+  if (correo) {
+    const existeCorreo = await Usuario.findOne({ correo });
+    if (existeCorreo) {
+      return res.status(400).json({
+        errores: {
+          errors: [{ msg: "El correo ya existe", param: "correo" }],
+        },
+        msg: "El usuario está vacío",
+      });
+    } else {
+      body.correo = correo;
+    }
+  }
 
   // Validar contra base de datos
   if (password) {
