@@ -10,7 +10,7 @@ const ProductoSchema = Schema({
     required: [true, "La descripción del producto es requerido"],
   },
   detalles: {
-    type: Object,
+    type: Array,
   },
   img: {
     type: String,
