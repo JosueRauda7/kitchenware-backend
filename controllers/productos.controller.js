@@ -5,9 +5,7 @@ const productosGet = async (req, res = response) => {
   const { start = 0, limit = 5, page = 1 } = req.query;
   const query = { estado: true };
   const [productos, totalProductos] = await Promise.all([
-    Producto.find(query)
-      .skip(Number((start > 0 ? start - 1 : start) * page))
-      .limit(Number(limit)),
+    Producto.find(query).skip(Number(start)).limit(Number(limit)),
     Producto.countDocuments(query),
   ]);
 
@@ -15,6 +13,9 @@ const productosGet = async (req, res = response) => {
     body: {
       productos,
       totalProductos,
+      page,
+      limit,
+      start,
       msg: "Productos obtenido correctamente",
     },
   });

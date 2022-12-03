@@ -47,11 +47,7 @@ router.get(
 
 router.get(
   "/:id",
-  [
-    check("id", "El id no es valido").isMongoId(),
-    check("id").custom(usuarioExiste),
-    validarCampos,
-  ],
+  [check("id", "El id no es valido").isMongoId(), validarCampos],
   usuariosGetById
 );
 
@@ -76,7 +72,6 @@ router.put(
   // [check("id").custom((id) => esIdValido(id))],
   [
     check("id", "El id no es valido").isMongoId(),
-    check("id").custom(usuarioExiste),
     check("rol").custom(esRolValido),
     validarCampos,
   ],

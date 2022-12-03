@@ -1,12 +1,10 @@
 const { Categoria, Producto } = require("../models/indexModels");
 
 const getCategorias = async (req, res) => {
-  const { start = 0, limit = 5, page = 1 } = req.query;
+  const { start = 0, limit = 25, page = 1 } = req.query;
   const query = { estado: true };
   const [categorias, totalCategorias] = await Promise.all([
-    Categoria.find(query)
-      .skip(Number((start > 0 ? start - 1 : 0) * page))
-      .limit(Number(limit)),
+    Categoria.find(query).skip(Number(start)).limit(Number(limit)),
     Categoria.countDocuments(query),
   ]);
 
@@ -15,6 +13,8 @@ const getCategorias = async (req, res) => {
       categorias,
       totalCategorias,
       page,
+      limit,
+      start,
       msg: "Categorias obtenidas correctamente",
     },
   });
